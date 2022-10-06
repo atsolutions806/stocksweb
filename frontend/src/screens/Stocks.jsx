@@ -23,47 +23,46 @@ const Stocks =()=>{
 
 useEffect(() => {
 
-if(ticker=='VIX'){
-  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=UVXY&interval=5min&apikey=${process.env.API_KEY}`
-  const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
-    axios.get(monthlyUrl)
-        .then(res => {
-          console.log(res.data)
+if(ticker=='VIX'){                 
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=UVXY&interval=5min&apikey=${process.env.API_KEY}`
+  const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
+  axios.get(monthlyUrl)                                 
+  .then(res => {
+    console.log(res.data)
 if(res.data){
-          setSixMonthData(Object.values(res.data)[1])}
-        })
-        .catch(err => setError1( err))
+    setSixMonthData(Object.values(res.data)[1])}
+  })
+  .catch(err => setError1( err))
 
+axios.get(url)
+  .then(res => {
 
-    axios.get(url)
-        .then(res => {
-  
 if(res.data)
 {                setStockStats(Object.values(res.data)[1])}
 
-                     })
-        .catch(err => setError2( err))
-                 
+               })
+               .catch(err => setError2( err))
+           
 }
 else if(ticker=='TNX'){
   const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=TBX&interval=5min&apikey=${process.env.API_KEY}`
   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
-    axios.get(monthlyUrl)
-        .then(res => {
-          console.log(res.data)
+  axios.get(monthlyUrl)                                 
+  .then(res => {
+    console.log(res.data)
 if(res.data){
-          setSixMonthData(Object.values(res.data)[1])}
-        })
-        .catch(err => setError1( err))
+    setSixMonthData(Object.values(res.data)[1])}
+  })
+  .catch(err => setError1( err))
 
-    axios.get(url)
-        .then(res => {
-  
+axios.get(url)
+  .then(res => {
+
 if(res.data)
 {                setStockStats(Object.values(res.data)[1])}
 
-                     })    
-                     .catch(err => setError2( err))
+               })
+               .catch(err => setError2( err))
 
                     }
 else if(ticker=='UUP'){
@@ -554,7 +553,7 @@ const calculateOneDayReturn = (position) => {
     if(currentValue !== undefined && prevValue !== undefined) {
         const currentClose = parseFloat(Object.values(currentValue)[3])
         const prevClose = parseFloat(Object.values(prevValue)[3])
-        return ((currentClose - prevClose) / prevClose).toFixed(5)
+        return ((currentClose - prevClose) / prevClose)
     }
 }
 
@@ -564,7 +563,7 @@ const calculateFiveDayReturn = (position) => {
     if(currentValue !== undefined && prevValue !== undefined) {
         const currentClose = parseFloat(Object.values(currentValue)[3])
         const prevClose = parseFloat(Object.values(prevValue)[3])
-        return ((currentClose - prevClose) / prevClose).toFixed(5)
+        return ((currentClose - prevClose) / prevClose)
     }
 }
 
@@ -574,7 +573,7 @@ const calculateOneMonthReturn = (position) => {
     if(currentValue !== undefined && prevValue !== undefined) {
         const currentClose = parseFloat(Object.values(currentValue)[3])
         const prevClose = parseFloat(Object.values(prevValue)[3])
-        return ((currentClose - prevClose) / prevClose).toFixed(5)
+        return ((currentClose - prevClose) / prevClose)
     }
 }
 
@@ -584,7 +583,7 @@ const calculateThreeMonthReturn = (position) => {
     if(currentValue !== undefined && prevValue !== undefined) {
         const currentClose = parseFloat(Object.values(currentValue)[3])
         const prevClose = parseFloat(Object.values(prevValue)[3])
-        return ((currentClose - prevClose) / prevClose).toFixed(5)
+        return ((currentClose - prevClose) / prevClose)
     }
 }
 
@@ -594,7 +593,7 @@ const calculateSixMonthReturn = (position) => {
     if(currentValue !== undefined && prevValue !== undefined) {
         const currentClose = parseFloat(Object.values(currentValue)[3])
         const prevClose = parseFloat(Object.values(prevValue)[3])
-        return ((currentClose - prevClose) / prevClose).toFixed(5)
+        return ((currentClose - prevClose) / prevClose)
     }
 }
 
@@ -802,11 +801,11 @@ const btc=()=>{window.location='/stocks/BTC'}
                             <td className={priceFormat}>${parseFloat(stockStats[entry]['4. close']).toFixed(2)}</td>
                             <td className={volumeFormat}>${stockStats[entry]['5. volume']}</td>
                             {calculateVolumeSignal(index) === 1 ? <td className="black-green">Volume Increasing</td> : calculateVolumeSignal(index) === 0 ? <td className="black-pink">Volume Falling</td> : <td></td>}
-                            <td>{calculateOneDayReturn(index)}%</td>
-                            <td>{calculateFiveDayReturn(index)}%</td>
-                            <td>{calculateOneMonthReturn(index)}%</td>
-                            <td>{calculateThreeMonthReturn(index)}%</td>
-                            <td>{calculateSixMonthReturn(index)}%</td>
+                            {calculateOneDayReturn(index) == undefined ? <td> </td> :calculateOneDayReturn(index) > 0 ? <td className='bullish-green'>{calculateOneDayReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateOneDayReturn(index).toFixed(5)}%</td>}
+                            {calculateFiveDayReturn(index) == undefined ? <td> </td> :calculateFiveDayReturn(index) > 0 ? <td className='bullish-green'>{calculateFiveDayReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateFiveDayReturn(index).toFixed(5)}%</td>}
+                            {calculateOneMonthReturn(index) == undefined ? <td> </td> :calculateOneMonthReturn(index) > 0  ? <td className='bullish-green'>{calculateOneMonthReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateOneMonthReturn(index).toFixed(5)}%</td>}
+                            {calculateThreeMonthReturn(index) == undefined ? <td> </td> :calculateThreeMonthReturn(index) > 0   ? <td className='bullish-green'>{calculateThreeMonthReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateThreeMonthReturn(index).toFixed(5)}%</td>}
+                            {calculateSixMonthReturn(index) == undefined ? <td> </td> :calculateSixMonthReturn(index) > 0  ? <td className='bullish-green'>{calculateSixMonthReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateSixMonthReturn(index).toFixed(5)}%</td>}
                             {calculateStockSentiment(index, 10) == 1 ? <td className='bearish-red'>Bearish</td> : calculateStockSentiment(index, 10) == 0 ? <td className='bullish-green'>Bullish</td>: <td></td>}
                             {calculateStockSentiment(index, 23) == 1 ? <td className='bearish-red'>Bearish</td> : calculateStockSentiment(index, 23) == 0 ? <td className='bullish-green'>Bullish</td>: <td></td>}
                             {calculateStockSentiment(index, 10) == 1 ? <td>${calculateBearishBuyBottom(index)}</td> : calculateStockSentiment(index, 10) == 0 ? <td>${calculateBullishBuyBottom(index)}</td> : <td></td>}
