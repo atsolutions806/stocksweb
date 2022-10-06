@@ -2,9 +2,9 @@
   "name": "stocksapp",
   "version": "1.0.0",
   "description": "MERN Stocks App",
-  "engines":{
-    "node":"16.x",
-    "npm":"8.x"
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
   },
   "main": "server.js",
   "scripts": {
@@ -13,7 +13,6 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
-
   },
   "author": "ATSolutions",
   "license": "MIT",
@@ -25,7 +24,7 @@
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
-    "mongoose": "^6.5.2",
+    "mongoose": "^6.6.5",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.2",
