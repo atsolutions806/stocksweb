@@ -1,0 +1,144 @@
+.green{
+    background-color: rgb(11, 218, 114);
+    color: rgb(254, 254, 254);
+
+}
+.red{
+    background-color: rgb(192, 73, 55);
+    color: rgb(254, 254, 254);
+}
+.orange{
+    background-color: rgb(248, 132, 44);
+    color: rgb(254, 254, 254);
+}
+td{
+    border: 1px solid #000000;
+}
+
+th{
+    border: 1px solid #000000 !important;
+}
+
+.blue-white{
+    color: #043ed1;
+    font-weight: bold;
+}
+
+.red-white{
+    color: #db3735;
+}
+
+.black-blue{
+    color: #000000;
+    background-color: #9ac8db;
+}
+
+.black-pink{
+    color: #000000;
+    background-color: #f2b8cb;
+}
+
+.black-green{
+    color: #000000;
+    background-color: #a4dbc0;
+}
+
+.black-darkgreen{
+    color: #000000;
+    background-color: #91cfbe;
+}
+
+.volume-spike{
+    text-align: center;
+    background-color: #e09b36;
+    color: #000000;
+    font-weight: 900;
+}
+.bearish-red{
+    text-align: center;
+    background-color: #e03936;
+    color: #000000;
+    font-weight: 900;
+    font-size: 17px;
+}
+.bullish-green{
+    text-align: center;
+    background-color: #b1d734;
+    color: #000000;
+    font-weight: 900;
+    font-size: 17px;
+}
+.price-head{
+    text-align: center;
+    background-color: #e03936;
+    color: #000000;
+    font-weight: 900;
+    font-size: 17px;
+}
+
+
+.performance-head{
+    text-align: center;
+    background-color: #cbf2f2;
+    color: #000000;
+    font-weight: 900;
+    font-size: 17px;
+}
+
+.performance-subhead{
+    text-align: center;
+    background-color: #cbf2f2;
+    color: #000000;
+    font-weight: 900;
+}
+
+.trend-indicator{
+    text-align: center;
+    background-color: #1b95f2;
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 15px;
+}
+
+.trade-signal{
+    text-align: center;
+    background-color: #48cfcf;
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 15px;
+}
+
+.volatility-indicator{
+    text-align: center;
+    background-color: #8b4ca6;
+    color: #fce77c;
+    font-weight: 900;
+    font-size: 17px;
+}
+
+.yellow-head {
+    background-color: #ffef9e;
+    font-weight: 900;
+    color: #000000;
+}
+
+.sentiment-head {
+    background-color: #f2ebc7;
+    font-weight: 900;
+    color: #000000;
+}
+
+.trade-signal-head {
+    background-color: #edb468;
+    font-weight: 900;
+    color: #000000;
+}
+
+.volatility-ind-head {
+    background-color: #ede668;
+    font-weight: 900;
+    color: #000000;
+}
+
+
+
