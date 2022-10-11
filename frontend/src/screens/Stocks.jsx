@@ -6,11 +6,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Button, NavDropdown,Table} from 'react-bootstrap'
 import TableStyles from '../assets/table.css'
 import FormContainer from '../components/FormContainer';
+import Loader from '../components/Loader';
 
 const Stocks =()=>{
   
   const {ticker}=useParams()
-  
+  let flag=0
   const [ stockStats, setStockStats ] = useState({})
   const [ sixMonthData, setSixMonthData ] = useState({})
   const [data,setData]=useState([])
@@ -19,12 +20,90 @@ const Stocks =()=>{
   let functionality='TIME_SERIES_DAILY'
    let [error1,setError1]=useState('')
    let [error2,setError2]=useState('')
- 
+   let stocking={}
 
+   const setDataOfGraph=(sliced)=>{
+    console.log(sliced)
+    const generateSquare = (num) => {
+        return num * num
+    }
+    const calculateMean = (position, numOfDays, value) => {
+        let mean = 0;
+    
+        for(let index = position + 1; index < position + numOfDays + 1; index++) {
+            const currentValue = Object.values(sliced)[index]
+            const requiredValue = parseFloat(Object.values(currentValue)[value])
+            mean += requiredValue
+        }
+    
+        return (mean / numOfDays);
+    }
+    const calculateStandardDeviation = (position, numOfDays, value) => {
+        const dataLength = Object.keys(sliced).length - position - 1
+        if(dataLength >= numOfDays + 1) {
+            const mean = calculateMean(position, numOfDays, value);
+            let sumOfVariance = 0;
+            
+            for (let index = position + 1; index < position + numOfDays + 1; index++) {
+                const currentValue = Object.values(sliced)[index]
+                const requiredValue = parseFloat(Object.values(currentValue)[value])
+                const variance = requiredValue - mean
+                const squaredVariance = generateSquare(variance)
+                sumOfVariance += squaredVariance
+            }
+    
+            const quotient = sumOfVariance / (numOfDays - 1)
+            return Math.sqrt(quotient)
+        }
+    }
+    const calculateAverage = (position, days, value) => {
+        let average = []
+        for (let ind = position; ind < (position + days); ind++) {
+            const currentValue = Object.values(sliced)[ind]
+            const requiredValue = parseFloat(Object.values(currentValue)[value])
+            average.push(requiredValue)
+        }
+        const closingAverage = average.reduce((a, b) => a + b, 0) / average.length;
+        return closingAverage
+    }
+    
+    
+     const Bottom = (position) => {
+         const dataLength = Object.keys(sliced).length - position - 1
+         if(dataLength >= 21) {
+             const standardDeviation = calculateStandardDeviation(position, 20, 3)
+             const average = calculateAverage(position + 1, 20, 3)
+             const buyBottom = average - standardDeviation
+             return buyBottom.toFixed(2)
+         }
+     }
+     
+     const Top = (position) => {
+         const dataLength = Object.keys(sliced).length - position - 1
+         if(dataLength >= 21) {
+             const standardDeviation = calculateStandardDeviation(position, 20, 3)
+             const average = calculateAverage(position + 1, 20, 3)
+             const sellTop = average + (3 * standardDeviation)
+             return sellTop.toFixed(2)
+         }
+     }
+         let num=0
+       
+         for (var key in sliced) {
+     if((Top(num)!==undefined) && (Bottom(num)!==undefined) ){
+            
+        const obj={date:key,close:Object.values(sliced[key])[3] ,bullishTop:Top(num)  ,bullishBottom:Bottom(num) }
+        pushData.push(obj)
+       }
+        num=num+1
+       }
+       let revData=pushData.reverse()
+        setData(revData)
+    
+   }
 useEffect(() => {
-
 if(ticker=='VIX'){                 
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=UVXY&interval=5min&apikey=${process.env.API_KEY}`
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=UVXY&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
   const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
   axios.get(monthlyUrl)                                 
   .then(res => {
@@ -38,14 +117,18 @@ axios.get(url)
   .then(res => {
 
 if(res.data)
-{                setStockStats(Object.values(res.data)[1])}
+{              const sliced = Object.fromEntries(
+    Object.entries(Object.values(res.data)[1]).slice(0, 400)
+  );
+         setDataOfGraph(sliced)
+         setStockStats(sliced)}
 
                })
                .catch(err => setError2( err))
            
 }
 else if(ticker=='TNX'){
-  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=TBX&interval=5min&apikey=${process.env.API_KEY}`
+  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=TBX&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
   axios.get(monthlyUrl)                                 
   .then(res => {
@@ -59,7 +142,11 @@ axios.get(url)
   .then(res => {
 
 if(res.data)
-{                setStockStats(Object.values(res.data)[1])}
+{               const sliced = Object.fromEntries(
+    Object.entries(Object.values(res.data)[1]).slice(0, 400)
+  );
+         setDataOfGraph(sliced)
+         setStockStats(sliced)}
 
                })
                .catch(err => setError2( err))
@@ -67,7 +154,7 @@ if(res.data)
                     }
 else if(ticker=='UUP'){
     
-  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&interval=5min&apikey=${process.env.API_KEY}`
+  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
     axios.get(monthlyUrl)                                 
         .then(res => {
@@ -80,16 +167,18 @@ if(res.data){
     axios.get(url)
         .then(res => {
   
-if(res.data)
-{                setStockStats(Object.values(res.data)[1])}
+   if(res.data)
+    {         const sliced = Object.fromEntries(Object.entries(Object.values(res.data)[1]).slice(0, 400));
+         setDataOfGraph(sliced)
+         setStockStats(sliced)}
 
-                     })
+  })
                      .catch(err => setError2( err))
 
                  
 }
-if(ticker=='BTC'){
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BTCUSD&interval=5min&apikey=${process.env.API_KEY}`
+else if(ticker=='BTC'){
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BTCUSD&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
     axios.get(monthlyUrl)
         .then(res => {
@@ -105,7 +194,11 @@ if(res.data){
 if(res.data)
 {   
     console.log(res.data)         
-        setStockStats(Object.values(res.data)[1])}
+    const sliced = Object.fromEntries(
+        Object.entries(Object.values(res.data)[1]).slice(0, 400)
+      );
+         setDataOfGraph(sliced)
+         setStockStats(sliced)}
 
                      })
                      .catch(err => setError2( err))
@@ -114,7 +207,7 @@ if(res.data)
  }
 
 else if(ticker){
-    const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&interval=5min&apikey=${process.env.API_KEY}`
+    const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
     const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)
           .then(res => {
@@ -128,7 +221,12 @@ else if(ticker){
           .then(res => {
     
   if(res.data)
-  {                setStockStats(Object.values(res.data)[1])}
+  {                const sliced = Object.fromEntries(
+    Object.entries(Object.values(res.data)[1]).slice(0, 400)
+  );
+ setStockStats(sliced)
+ setDataOfGraph(sliced)
+}
   
                        })
                        .catch(err => setError2( err))
@@ -138,11 +236,9 @@ else if(ticker){
 }
 else{
  
-const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&interval=5min&apikey=${process.env.API_KEY}`
+const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
 const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=${process.env.API_KEY}`
-  axios.get(monthlyUrl)
-
-      .then(res => {
+  axios.get(monthlyUrl) .then(res => {
   console.log(res.data)
 
           if(res.data){
@@ -152,51 +248,25 @@ const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTH
 
   axios.get(url)
       .then(res => {
+
         if(res.data){
-        setStockStats(Object.values(res.data)[1])}
-                   })
-                   .catch(err => setError2( err))
-
-
-                  }
-  }, [])
-  useEffect(()=>{
-    const Bottom = (position) => {
-        const dataLength = Object.keys(stockStats).length - position - 1
-        if(dataLength >= 21) {
-            const standardDeviation = calculateStandardDeviation(position, 20, 3)
-            const average = calculateAverage(position + 1, 20, 3)
-            const buyBottom = average - standardDeviation
-            return buyBottom.toFixed(2)
-        }
-    }
-    
-    const Top = (position) => {
-        const dataLength = Object.keys(stockStats).length - position - 1
-        if(dataLength >= 21) {
-            const standardDeviation = calculateStandardDeviation(position, 20, 3)
-            const average = calculateAverage(position + 1, 20, 3)
-            const sellTop = average + (3 * standardDeviation)
-            return sellTop.toFixed(2)
-        }
-    }
-        let num=0
-        for (var key in stockStats) {
-     if((Top(num)!==undefined) && (Bottom(num)!==undefined) ){
+        console.log(res.data)
+        const sliced1 = Object.fromEntries(
+            Object.entries(Object.values(res.data)[1]).slice(0, 400)
+          );
           
-       const obj={date:key,close:Object.values(stockStats[key])[3] ,bullishTop:Top(num)  ,bullishBottom:Bottom(num) }
-       console.log(obj)
-       pushData.push(obj)
-      }
-       num=num+1
-    
-      }
-      let revData=pushData.reverse()
-       setData(revData)
-    
-  },[stockStats])
+         setStockStats(sliced1)
+         setDataOfGraph(sliced1)
+         
+                  }
+         })
+        .catch(err => setError2( err))
 
-     useEffect(()=>{
+
+        }
+  }, [])
+
+useEffect(()=>{
       const config= {
           headers:{
               
@@ -548,6 +618,7 @@ const calculatePriceTrend = (position) => {
 }
 
 const calculateOneDayReturn = (position) => {
+    console.log('pos:'+position)
     const currentValue = Object.values(stockStats)[position]
     const prevValue = Object.values(stockStats)[position + 1]
     if(currentValue !== undefined && prevValue !== undefined) {
@@ -749,11 +820,10 @@ const btc=()=>{window.location='/stocks/BTC'}
        <Line type="monotone" dataKey="close" stroke="black"   dot={false} />
      <Line type="monotone" dataKey="bullishTop" stroke="purple" strokeDasharray="3 3" dot={false} />
      <Line type="monotone" dataKey="bullishBottom" stroke="red" strokeDasharray="3 3" dot={false}/>
-
           </LineChart>}
     </FormContainer>
         <h3>Indicators</h3>
-        <Table hover table-responsive-xl>
+      {data ?  <Table hover table-responsive-xl>
             <thead>
                 <tr>
                     <th className="volume-spike" colSpan="1">Volume Spike</th>
@@ -823,7 +893,7 @@ const btc=()=>{window.location='/stocks/BTC'}
                 })}
             </tbody>
         
-        </Table>
+        </Table>:<Loader/>}
         </div>:<div>
                     <h5>{error1 ? error1:<div> <h6>Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 500 calls per day. Please visit https://www.alphavantage.co/premium/ if you would like to target a higher API call frequency</h6><br/><h5>Wait a minute</h5></div>}</h5>
                     <br/>

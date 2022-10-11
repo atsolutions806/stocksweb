@@ -64,7 +64,7 @@ cron.schedule("0 */6 * * *", async () => {
     
 })
 
-cron.schedule("*/10 * * * *", async () => {
+cron.schedule("*/15 * * * *", async () => {
     await AlertsSchema.distinct("symbol")
     .then((data)=>{
         asyncForEach(data, async (symbol) => {
