@@ -184,7 +184,7 @@ const Stocks =()=>{
 //   }, [])
   useEffect(() => {
     if(ticker=='VIX'){                 
-      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uvxy&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uvxy&limit=400&date_from=${tdate}&date_to=${fdate}`
       const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)                                 
       .then(res => {
@@ -211,7 +211,7 @@ console.log(response.data)
                
     }
     else if(ticker=='TNX'){
-      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=TBX&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=TBX&limit=400&date_from=${tdate}&date_to=${fdate}`
       const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)                                 
       .then(res => {
@@ -242,7 +242,7 @@ console.log(response.data)
                         }
     else if(ticker=='UUP'){
         
-      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uup&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uup&limit=400&date_from=${tdate}&date_to=${fdate}`
       const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)                                 
           .then(res => {
@@ -270,7 +270,7 @@ if(response.data)
                      
     }
     else if(ticker=='BTC'){
-      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=btcusd&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=btcusd&limit=400&date_from=${tdate}&date_to=${fdate}`
       const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
     axios.get(monthlyUrl)
         .then(res => {
@@ -301,7 +301,7 @@ console.log(response.data)
      }
     
     else if(ticker){
-        const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=${ticker}&limit=400&date_from=${tdate}&date_to=${fdate}`
+        const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=${ticker}&limit=400&date_from=${tdate}&date_to=${fdate}`
         const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)
           .then(res => {
@@ -330,7 +330,7 @@ setSixMonthData(Object.values(res.data)[1])
     }
     else{
      
-    const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=ibm&limit=400&date_from=${tdate}&date_to=${fdate}` 
+    const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=ibm&limit=400&date_from=${tdate}&date_to=${fdate}` 
     const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=${process.env.API_KEY}`
  
 
