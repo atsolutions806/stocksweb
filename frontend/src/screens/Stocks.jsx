@@ -11,16 +11,20 @@ import Loader from '../components/Loader';
 const Stocks =()=>{
   
   const {ticker}=useParams()
-  let flag=0
-  const [ stockStats, setStockStats ] = useState({})
+
+  const [ stockStats, setStockStats ] = useState([])
   const [ sixMonthData, setSixMonthData ] = useState({})
   const [data,setData]=useState([])
-  let [range,setRange]=useState(5)    
+  let [range,setRange]=useState(5)  
+  const date=new Date()
+  const fdate=date.getFullYear()+'-'+('0'+(date.getMonth()+1)).slice(-2)+'-'+('0'+(date.getDate()-2)).slice(-2)
+ //const date=new Date().toLocaleDateString('en-CA')
+  const tdate=(date.getFullYear()-1)+'-'+('0'+(date.getMonth()-1)).slice(-2)+'-'+('0'+date.getDate()).slice(-2)  
   let pushData=[]
   let functionality='TIME_SERIES_DAILY'
    let [error1,setError1]=useState('')
    let [error2,setError2]=useState('')
-   let stocking={}
+   
 
    const setDataOfGraph=(sliced)=>{
     console.log(sliced)
@@ -92,7 +96,7 @@ const Stocks =()=>{
          for (var key in sliced) {
      if((Top(num)!==undefined) && (Bottom(num)!==undefined) ){
             
-        const obj={date:key,close:Object.values(sliced[key])[3] ,bullishTop:Top(num)  ,bullishBottom:Bottom(num) }
+        const obj={date:Object.values(sliced[key])[14].slice(0,10),close:Object.values(sliced[key])[3] ,bullishTop:Top(num)  ,bullishBottom:Bottom(num) }
         pushData.push(obj)
        }
         num=num+1
@@ -101,171 +105,261 @@ const Stocks =()=>{
         setData(revData)
     
    }
-useEffect(() => {
-if(ticker=='VIX'){                 
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=UVXY&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-  const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
-  axios.get(monthlyUrl)                                 
-  .then(res => {
-    console.log(res.data)
-if(res.data){
-    setSixMonthData(Object.values(res.data)[1])}
-  })
-  .catch(err => setError1( err))
+// useEffect(() => {
+// if(ticker=='VIX'){                 
+//   const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
+//   axios.get(monthlyUrl)                                 
+//   .then(res => {
+//     console.log(res.data)
+// if(res.data){
+//     setSixMonthData(Object.values(res.data)[1])}
+//   })
+//   .catch(err => setError1( err))
 
-axios.get(url)
-  .then(res => {
 
-if(res.data)
-{              const sliced = Object.fromEntries(
-    Object.entries(Object.values(res.data)[1]).slice(0, 400)
-  );
-         setDataOfGraph(sliced)
-         setStockStats(sliced)}
-
-               })
-               .catch(err => setError2( err))
            
-}
-else if(ticker=='TNX'){
-  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=TBX&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-  const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
-  axios.get(monthlyUrl)                                 
-  .then(res => {
-    console.log(res.data)
-if(res.data){
-    setSixMonthData(Object.values(res.data)[1])}
-  })
-  .catch(err => setError1( err))
+// }
+// else if(ticker=='TNX'){
+//   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
+//   axios.get(monthlyUrl)                                 
+//   .then(res => {
+//     console.log(res.data)
+// if(res.data){
+//     setSixMonthData(Object.values(res.data)[1])}
+//   })
+//   .catch(err => setError1( err))
 
-axios.get(url)
-  .then(res => {
-
-if(res.data)
-{               const sliced = Object.fromEntries(
-    Object.entries(Object.values(res.data)[1]).slice(0, 400)
-  );
-         setDataOfGraph(sliced)
-         setStockStats(sliced)}
-
-               })
-               .catch(err => setError2( err))
-
-                    }
-else if(ticker=='UUP'){
+//                     }
+// else if(ticker=='UUP'){
     
-  const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-  const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
-    axios.get(monthlyUrl)                                 
-        .then(res => {
-          console.log(res.data)
-if(res.data){
-          setSixMonthData(Object.values(res.data)[1])}
-        })
-        .catch(err => setError1( err))
-
-    axios.get(url)
-        .then(res => {
-  
-   if(res.data)
-    {         const sliced = Object.fromEntries(Object.entries(Object.values(res.data)[1]).slice(0, 400));
-         setDataOfGraph(sliced)
-         setStockStats(sliced)}
-
-  })
-                     .catch(err => setError2( err))
+//   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
+//     axios.get(monthlyUrl)                                 
+//         .then(res => {
+//           console.log(res.data)
+// if(res.data){
+//           setSixMonthData(Object.values(res.data)[1])}
+//         })
+//         .catch(err => setError1( err))
 
                  
-}
-else if(ticker=='BTC'){
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=BTCUSD&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-  const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
+// }
+// else if(ticker=='BTC'){
+//   const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
+//     axios.get(monthlyUrl)
+//         .then(res => {
+//           console.log(res.data)
+// if(res.data){
+//           setSixMonthData(Object.values(res.data)[1])}
+//         })
+//         .catch(err => setError1( err))
+
+                 
+//  }
+
+// else if(ticker){
+//     const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
+//       axios.get(monthlyUrl)
+//           .then(res => {
+//             console.log(res.data)
+//   if(res.data){
+//             setSixMonthData(Object.values(res.data)[1])}
+//           })
+//           .catch(err => setError1( err))
+  
+ 
+// }
+// else{
+ 
+// const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=${process.env.API_KEY}`
+//   axios.get(monthlyUrl) .then(res => {
+//   console.log(res.data)
+
+//           if(res.data){
+//           setSixMonthData(Object.values(res.data)[1])}
+//       })
+//       .catch(err => setError1( err))
+
+  
+//         }
+//   }, [])
+  useEffect(() => {
+    if(ticker=='VIX'){                 
+      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uvxy&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const monthlyUrl =`https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=UVXY&apikey=${process.env.API_KEY}`
+      axios.get(monthlyUrl)                                 
+      .then(res => {
+        console.log(res.data)
+    if(res.data){
+        axios.get(url)
+        .then(response => {
+console.log(response.data)         
+      
+      if(response.data)
+      {           
+               setDataOfGraph(Object.values(response.data)[1])
+               setStockStats(Object.values(response.data)[1])
+               setSixMonthData(Object.values(res.data)[1])
+            }
+      
+                     })
+                     .catch(err => setError2( err))
+  
+        }
+      })
+      .catch(err => setError1( err))
+    
+               
+    }
+    else if(ticker=='TNX'){
+      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=TBX&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=TBX&apikey=${process.env.API_KEY}`
+      axios.get(monthlyUrl)                                 
+      .then(res => {
+        console.log(res.data)
+    if(res.data){
+        axios.get(url)
+        .then(response => {
+console.log(response.data)         
+      
+      if(response.data)
+      {             
+        
+               setDataOfGraph(Object.values(response.data)[1])
+               setStockStats(Object.values(response.data)[1])
+               setSixMonthData(Object.values(res.data)[1])
+            
+            }
+      
+                     })
+                     .catch(err => setError2( err))
+     
+        }
+      })
+      .catch(err => setError1( err))
+    
+     
+    
+                        }
+    else if(ticker=='UUP'){
+        
+      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=uup&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
+      axios.get(monthlyUrl)                                 
+          .then(res => {
+            console.log(res.data)
+  if(res.data){
+    axios.get(url)
+    .then(response => {
+        console.log(response.data)         
+
+if(response.data)
+{         
+     setDataOfGraph(Object.values(response.data)[1])
+     setStockStats(Object.values(response.data)[1])
+     setSixMonthData(Object.values(res.data)[1])
+    }
+
+})
+                 .catch(err => setError2( err))
+
+            }
+          })
+          .catch(err => setError1( err))
+  
+      
+                     
+    }
+    else if(ticker=='BTC'){
+      const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=btcusd&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
     axios.get(monthlyUrl)
         .then(res => {
           console.log(res.data)
 if(res.data){
-          setSixMonthData(Object.values(res.data)[1])}
+    axios.get(url)
+    .then(response => {
+
+if(response.data)
+{   
+console.log(response.data)         
+
+     setDataOfGraph(Object.values(response.data)[1])
+     setStockStats(Object.values(response.data)[1])
+     setSixMonthData(Object.values(res.data)[1])
+    }
+
+                 })
+                 .catch(err => setError2( err))
+
+    }
         })
         .catch(err => setError1( err))
 
-    axios.get(url)
-        .then(res => {
   
-if(res.data)
-{   
-    console.log(res.data)         
-    const sliced = Object.fromEntries(
-        Object.entries(Object.values(res.data)[1]).slice(0, 400)
-      );
-         setDataOfGraph(sliced)
-         setStockStats(sliced)}
-
-                     })
-                     .catch(err => setError2( err))
-
-                 
- }
-
-else if(ticker){
-    const url = `https://www.alphavantage.co/query?function=${functionality}&symbol=${ticker}&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-    const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
+       
+                     
+     }
+    
+    else if(ticker){
+        const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=${ticker}&limit=400&date_from=${tdate}&date_to=${fdate}`
+        const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
       axios.get(monthlyUrl)
           .then(res => {
             console.log(res.data)
-  if(res.data){
-            setSixMonthData(Object.values(res.data)[1])}
+  if(res.data){ axios.get(url)
+    .then(response => {
+        console.log(response.data)         
+
+if(response.data)
+{               
+setStockStats(Object.values(response.data)[1])
+setDataOfGraph(Object.values(response.data)[1])
+setSixMonthData(Object.values(res.data)[1])
+}
+
+                 })
+                 .catch(err => setError2( err))
+
+
+           }
           })
           .catch(err => setError1( err))
   
-      axios.get(url)
-          .then(res => {
-    
-  if(res.data)
-  {                const sliced = Object.fromEntries(
-    Object.entries(Object.values(res.data)[1]).slice(0, 400)
-  );
- setStockStats(sliced)
- setDataOfGraph(sliced)
-}
-  
-                       })
-                       .catch(err => setError2( err))
-
-                   
-  
-}
-else{
+                       
+      
+    }
+    else{
+     
+    const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=ibm&limit=400&date_from=${tdate}&date_to=${fdate}` 
+    const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=${process.env.API_KEY}`
  
-const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&outputsize=full&interval=5min&apikey=${process.env.API_KEY}`
-const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=IBM&apikey=${process.env.API_KEY}`
-  axios.get(monthlyUrl) .then(res => {
-  console.log(res.data)
 
-          if(res.data){
-          setSixMonthData(Object.values(res.data)[1])}
-      })
-      .catch(err => setError1( err))
-
-  axios.get(url)
-      .then(res => {
-
-        if(res.data){
-        console.log(res.data)
-        const sliced1 = Object.fromEntries(
-            Object.entries(Object.values(res.data)[1]).slice(0, 400)
-          );
-          
-         setStockStats(sliced1)
-         setDataOfGraph(sliced1)
-         
-                  }
-         })
-        .catch(err => setError2( err))
-
-
-        }
-  }, [])
-
+    axios.get(monthlyUrl)
+          .then(res => {
+              console.log(res)
+            if(res.data){
+            console.log(res.data)
+            axios.get(url) .then(response => {
+                console.log(response.data)
+              
+                        if(response.data){
+                        setSixMonthData(Object.values(res.data)[1])
+                        setStockStats(Object.values(response.data)[1])
+                        setDataOfGraph(Object.values(response.data)[1])                    
+                    }
+                    })
+                    .catch(err => setError1( err))
+              
+              
+            
+             
+                      }
+             })
+            .catch(err => setError2( err))
+    
+    
+            }
+      }, [])
 useEffect(()=>{
       const config= {
           headers:{
@@ -860,16 +954,20 @@ const btc=()=>{window.location='/stocks/BTC'}
             </thead>
             <tbody>
                 {Object.keys(stockStats).map((entry, index) => {
+                    let k=0
                     let next = index++;
                     const priceFormat = conditionalPriceFormatting(index);
                     const volumeFormat = conditionalVolumeFormatting(index);
                     const volatilityFormat = conditionalVolatilityFormatting(index);
+                    // if(index==100 || index==200 || index==300 || index==400){
+                    //     k=k+1
+                    // }
                     return (
                         <tr>
-                            {calculateStockVolumes(index) === true ? <td>Volume Spike</td> : <td></td>}
-                            <td>{entry}</td>
-                            <td className={priceFormat}>${parseFloat(stockStats[entry]['4. close']).toFixed(2)}</td>
-                            <td className={volumeFormat}>${stockStats[entry]['5. volume']}</td>
+                            {calculateStockVolumes(index) === true ? <td>Volume Spike</td> : <td> </td>}
+                            <td>{Object.values(stockStats[entry])[14].slice(0,10)}</td>
+                            <td className={priceFormat}>${parseFloat(Object.values(stockStats[entry])[3]).toFixed(2)}</td>
+                            <td className={volumeFormat}>${Object.values(stockStats[entry])[4]}</td>
                             {calculateVolumeSignal(index) === 1 ? <td className="black-green">Volume Increasing</td> : calculateVolumeSignal(index) === 0 ? <td className="black-pink">Volume Falling</td> : <td></td>}
                             {calculateOneDayReturn(index) == undefined ? <td> </td> :calculateOneDayReturn(index) > 0 ? <td className='bullish-green'>{calculateOneDayReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateOneDayReturn(index).toFixed(5)}%</td>}
                             {calculateFiveDayReturn(index) == undefined ? <td> </td> :calculateFiveDayReturn(index) > 0 ? <td className='bullish-green'>{calculateFiveDayReturn(index).toFixed(5)}%</td> : <td className='bearish-red'>{calculateFiveDayReturn(index).toFixed(5)}%</td>}
