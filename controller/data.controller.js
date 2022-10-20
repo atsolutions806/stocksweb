@@ -15,10 +15,7 @@ exports.getStockData=async(req,res)=>
     {
         ticker='tbx'
     }
-    if(ticker=='BTC'|| ticker=='btc')
-    {
-        ticker='btcusd'
-    }
+   
     console.log(tdate+' '+fdate+' '+ticker)
     let sixMonthData={}
     let  stockStats={}
@@ -507,8 +504,8 @@ exports.getStockData=async(req,res)=>
             return revData
         
        }
-    const url = `http://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=${ticker}&limit=400&date_from=${tdate}&date_to=${fdate}` 
-    const monthlyUrl = `http://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
+    const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=${ticker}&limit=400&date_from=${tdate}&date_to=${fdate}` 
+    const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=${ticker}&apikey=${process.env.API_KEY}`
  
 
  axios.get(monthlyUrl)
