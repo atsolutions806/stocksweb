@@ -193,7 +193,7 @@ if(response.data)
                      
     }
     else if(ticker=='BTC'){
-      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=btcusd&limit=400&date_from=${tdate}&date_to=${fdate}`
+      const url = `https://api.marketstack.com/v1/eod?access_key=fbcc4d37fa291f8e8d972b26e005b880&symbols=btc&limit=400&date_from=${tdate}&date_to=${fdate}`
       const monthlyUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol=BTCUSD&apikey=${process.env.API_KEY}`
     axios.get(monthlyUrl)
         .then(res => {
@@ -815,7 +815,7 @@ const btc=()=>{window.location='/stocks/BTC'}
           </div>
         <FormContainer sx='12' md='12'> 
     <h1>{ticker ? ticker :'IBM'}</h1>
-    
+{data[0] ? '' :<Loader/>}
          
    {data &&
     <LineChart
